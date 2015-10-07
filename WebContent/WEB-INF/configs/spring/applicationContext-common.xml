@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+	
+	<!-- <import resource="classpath:frameworkContext.xml" /> -->
+	
+	<!-- 配置aop -->
+	<aop:aspectj-autoproxy />
+	<context:component-scan base-package="com">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	<!-- 配置aop -->
+	<!-- 使用 annotation -->
+	<context:annotation-config />
+	
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"  
+        destroy-method="close">  
+        <!-- 指定连接数据库的驱动 -->  
+        <property name="driverClass" value="com.mysql.jdbc.Driver" />  
+        <!-- 指定连接数据库的URL -->  
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/admin" />  
+        <!-- 指定连接数据库的用户名 -->  
+        <property name="user" value="root" />  
+        <!-- 指定连接数据库的密码 -->  
+        <property name="password" value="root" />  
+        <!--连接池中保留的最大连接数。Default: 15 -->  
+        <property name="maxPoolSize" value="40" />  
+        <!-- 指定连接数据库连接池的最小连接数 -->  
+        <property name="minPoolSize" value="10" />  
+        <!-- 指定连接数据库连接池的初始化连接数 取值应在minPoolSize与maxPoolSize之间。Default: 3 -->  
+        <property name="initialPoolSize" value="5" />  
+        <!--最大空闲时间,25000秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->  
+        <property name="maxIdleTime" value="25000" />  
+        <!--如果设为true那么在取得连接的同时将校验连接的有效性。Default: false -->  
+        <property name="testConnectionOnCheckin" value="true" />  
+        <!--每18000秒检查所有连接池中的空闲连接。Default: 0 -->  
+        <property name="idleConnectionTestPeriod" value="18000" />  
+    </bean>  
+    <!--定义了Hibernate的SessionFactory -->  
+    <!-- 
+    <bean id="sessionFactory"  
+        class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">  
+        <property name="dataSource" ref="dataSource" />  
+        <property name="hibernateProperties">  
+            <props>  
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>  
+                <prop key="hibernate.show_sql">true</prop>  
+                <prop key="hibernate.hbm2ddl.auto">update</prop>  
+                <prop key="hibernate.jdbc.batch_size">30</prop>  
+            </props>  
+        </property>
+       
+        <property name="mappingResources">  
+            <list>  
+                <value>com/cric/model/Admin.hbm.xml</value>  
+                <value>com/cric/model/User.hbm.xml</value>  
+                <value>com/cric/model/Tamerlane.hbm.xml</value>  
+            </list>  
+        </property> 
+    </bean> 
+	  -->
+	
+	
+	<!-- 使用 annotation 自动注册bean,并检查@Controller, @Service, @Repository注解已被注入 -->
+      <!--  <import resource="classpath:frameworkContext.xml"/> --> 
+	<!-- hibernate属性配置 -->
+	<!-- 
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<description>属性配置接入</description>
+		<property name="locations">
+			<list>
+				<value>classpath:hibernate.properties</value>
+				<value>classpath:application.properties</value>
+				<value>classpath:database.properties</value>
+			</list>
+		</property>
+	</bean>
+	 -->
+	<!-- 
+	 <bean id="configBean2" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+		<value>classpath:wssuap.properties</value>
+		</property>
+		<property name="ignoreUnresolvablePlaceholders">
+		<value>true</value>
+		</property>		
+	</bean>	
+		 -->
+				
+<!--	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">-->
+<!--		<property name="jndiName" value="tjfxDS" />-->
+<!--    </bean>-->
+
+	<!-- 配置dataSource 使用apache的dbcp数据源 -->
+	<!-- 
+   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${dataSource.driverClassName}" />
+		<property name="url" value="${dataSource.url}" />
+		<property name="username" value="${dataSource.username}" />
+		<property name="password" value="${dataSource.password}" />
+		<property name="defaultAutoCommit" value="false" />
+	</bean> 
+	 -->
+	<!-- 配置sessionFactory -->
+	<!-- 
+	<bean id="sessionFactory"
+		class="com.wondersgroup.framework.core5.dao.support.EnhancedAnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="com.wondersgroup.*.entity,com.wondersgroup.*.*.entity" />
+		<property name="configLocation" value="classpath:hibernate.cfg.xml" />
+		<property name="mappingDirectoryLocations">
+			<list>
+			</list>
+		</property>
+		<property name="mappingJarLocations">
+			<list>
+			</list>
+		</property>
+		<property name="annotatedPackagePrefixes">
+			<list>
+				<value>com.wondersgroup.wssuap</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+			<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.dialect">
+					${hibernate.dialect}
+				</prop>
+				<prop key="current_session_context_class">thread</prop>
+			</props>
+		</property>
+		<property name="lobHandler" ref="${jdbc.handler}" />
+		
+				<property name="mappingResources">
+			<list>	
+				<value>com/wondersgroup/qyws/tjfx/entity/TbYsxtFavourite.hbm.xml</value>
+				<value>com/wondersgroup/qyws/task/module/TbTaskDetail.hbm.xml</value>
+				<value>com/wondersgroup/qyws/task/module/TbTaskDetailDic.hbm.xml</value>
+				<value>com/wondersgroup/qyws/tjfx/module/TbYsxtRwjs.hbm.xml</value>
+				<value>com/wondersgroup/qyws/tjfx/module/TbYsxtUserRwjs.hbm.xml</value>
+				<value>com/wondersgroup/qyws/tjfx/module/TbYsxtUserTask.hbm.xml</value>
+			</list>
+		</property>
+		
+		
+	</bean>
+	 -->
+	 
+	
+	<!-- 配置事务管理 -->
+	<!-- 
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	 -->
+	<!-- 配置注解实现管理事务 -->
+	<!-- 
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+	
+	<alias name="sessionFactory" alias="wssuap_sessionFactory"/>
+	<alias name="abstractHibernateDao" alias="wssuap_abstractHibernateDao"/>
+	<alias name="abstractJdbcDao" alias="wssuap_abstractJdbcDao"/>
+	<alias name="abstractHqlPageQuery" alias="wssuap_abstractHqlPageQuery"/>
+	<bean id="wssuap_basicTxProxy" abstract="true"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="save*">PROPAGATION_REQUIRED</prop>
+				<prop key="add*">PROPAGATION_REQUIRED</prop>
+				<prop key="remove*">PROPAGATION_REQUIRED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	 -->
+	
+	
+</beans>
